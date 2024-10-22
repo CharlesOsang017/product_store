@@ -3,9 +3,6 @@ import Product from "../models/product.model.js";
 export const createProduct = async (req, res) => {
   const { title, description, image, price } = req.body;
   try {
-    if (!title || !description || !price || !image) {
-      return res.status(401).json({ error: "All fields are required" });
-    }
     const newProduct = new Product({ title, description, price, image });
     await newProduct.save();
     return res.status(201).json(newProduct);
@@ -29,7 +26,7 @@ export const updateProduct = async (req, res) => {
   const { title, description, price, image } = req.body;
 
   try {
-    // Use the Product model directly to update the product
+    
     const updatedProduct = await Product.findByIdAndUpdate(
       id, // Pass the ID of the product to update
       { title, description, price, image }, // The fields to update
@@ -47,29 +44,29 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-export const allProducts = async(req, res)=>{
+export const allProducts = async (req, res) => {
   try {
-    const products = await Product.find({})
-    if(!products){
-      return res.status(200).json([])
+    const products = await Product.find({}).sort("-createdAt");
+    if (!products) {
+      return res.status(200).json([]);
     }
-    return res.status(200).json(products)
+    return res.status(200).json(products);
   } catch (error) {
-    console.log('error in getallproducts controller', error.message)
-    return res.status(500).json({error: "internal server"})
+    console.log("error in getallproducts controller", error.message);
+    return res.status(500).json({ error: "internal server" });
   }
-}
+};
 
-export const product = async(req, res)=>{
-  const {id} = req.params
+export const product = async (req, res) => {
+  const { id } = req.params;
   try {
-    const product = await Product.findById(id)
-    if(!product){
-      return res.status(404).json({message: 'product not found'})
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "product not found" });
     }
-    return res.status(200).json(product)
+    return res.status(200).json(product);
   } catch (error) {
-    console.log('error in get product controller', error.message)
-    return res.status(500).json({error: "internal server error"})
+    console.log("error in get product controller", error.message);
+    return res.status(500).json({ error: "internal server error" });
   }
-}
+};
